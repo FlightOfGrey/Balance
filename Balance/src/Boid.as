@@ -96,6 +96,7 @@ package
 			alpha = (maxHunger-hunger)/maxHunger;
 		}
 		
+		
 		private function foodingTime():void
 		{
 			if(food.countLiving() > 0 && hunger > 0){
@@ -330,7 +331,7 @@ package
 		 */
 		private function breed(partner:Boid):void
 		{
-			if(matingTimer > myGroup.countLiving()/4){
+			if(matingTimer > myGroup.countLiving()/10){
 				if(hunger == 0 && partner.hunger == 0)
 				{
 					var b:Boid = new Boid(myGroup, predators, food, emitter,  this.x+1, this.y+1);

@@ -5,16 +5,16 @@ package
 	public class Predator extends FlxSprite
 	{
 		
-		static private var food:FlxGroup; 				//The group in which has all the herbs/boids
+		static private var food:FlxGroup;
 		
-		static private var perception:Number = 140; 	//The distance which a predator can detect prey, partners and the edge of the screen
+		static private var perception:Number = 140;
 		
-		private var wanderTheta:Number = 0;
-		static private var maxSpeed:Number = 200;		//Max speed obviously!
-		static private var maxForce:Number = 0.1;    	// Maximum steering force
+		private var wanderTheta:Number = 0.1;
+		static private var maxSpeed:Number = 200;
+		static private var maxForce:Number = 0.1;    // Maximum steering force
 		
-		private var hunger:int = 0;						// Current hunger level, 0=full 
-		public var hungerTimer:int = 0;					//
+		private var hunger:int = 0;
+		public var hungerTimer:int = 0;
 		private var maxHunger:int = 10;
 		
 		public var hungerTimerThreshold:Number = 100;
@@ -28,36 +28,33 @@ package
 		public function Predator(fd:FlxGroup, xPos:Number = -1, yPos:Number = -1)
 		{
 			super();
-			food = fd;
-			loadGraphic(img, false);
 			
 			velocity.x = -20;
 			velocity.y = -20;
 			
+			food = fd;
+			loadGraphic(img, false);
 			if(yPos == -1){
 				startAtEdge();
 			} else{
 				this.x = xPos;
 				this.y = yPos;
 			}
-			
-			trace(velocity.x);
-			trace(velocity.y);
 		}
 		
 		override public function update():void
 		{
 			super.update();
-
 			speedLimiting();
 			edgeBounce();
-			wander();
 			
+			wander();
 			bloodFrenzy();
 			doTheHunger();
 			breedBabyBreed();
 			rotateSprite();
 			opacity();
+			
 		}
 		
 		private function startAtEdge():void
@@ -97,9 +94,8 @@ package
 				var currentDist:Number;
 				
 				for each(var member:* in s.predators.members){
-				
 					if(member !=null && member.alive && member!= this){
-						if(hunger <= maxHunger/3 && member.hunger <= member.maxHunger/3 && matingTimer > s.predators.countLiving()*2.5){
+						if(hunger <= maxHunger/3 && member.hunger <= member.maxHunger/3 && matingTimer > s.predators.countLiving()*300 && s.predators.countLiving() <= 4){
 							
 							memberPos.x = member.x;
 							memberPos.y = member.y;
@@ -139,15 +135,15 @@ package
 		
 		private function speedLimiting():void
 		{
-			maxSpeed = hunger/maxHunger*200+50;			
+			maxSpeed = hunger/maxHunger*50+150;			
 		}
 		
 		private function doTheHunger():void
 		{
 			hungerTimer++;
+			matingTimer++;
 			if(hungerTimer == hungerTimerThreshold)
 			{
-				matingTimer++;
 				hunger++;
 				hungerTimer = 0;
 				if(hunger == maxHunger)
@@ -216,8 +212,9 @@ package
 		{
 			var wanderRadius:Number = 16; //radius of wander circle
 			var wanderDist:Number = 60; //distance for wander circle
-			var change:Number = 0.2;
-			wanderTheta += randomRange(-change*hunger/maxHunger - 0.1, change*hunger/maxHunger + 0.1); //randomly change the wander theta
+			var change:Number = -0.5;
+			/*wanderTheta += randomRange(-change*hunger/maxHunger - 0.1, change*hunger/maxHunger + 0.1);*/ //randomly change the wander theta
+			wanderTheta += randomRange(-change, change); //randomly change the wander theta
 			
 			var circleLocation:FlxPoint = new FlxPoint(velocity.x, velocity.y);
 			circleLocation = normalize(circleLocation);
@@ -227,8 +224,6 @@ package
 			
 			var circleOffSet:FlxPoint = new FlxPoint(wanderRadius*Math.cos(wanderTheta), wanderRadius*Math.sin(wanderTheta));
 			var target:FlxPoint = add(circleLocation, circleOffSet);	
-			trace(target.x);
-			trace(target.y);
 			velocity = add(velocity, mulNumb(steer(target), 0.5));  // Steer towards it
 		}
 		
