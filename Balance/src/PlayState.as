@@ -122,29 +122,7 @@ package
 		override public function update():void
 		{
 			//Updates everything added to this state by calling each objects update method
-			
-			if(predators.countLiving() >= 0){
-				for each(var n:* in predators.members){
-					if(n !=null && n.alive){
-						trace("Before PLaystate super.update() = " + n.velocity.x);
-						trace("Velocity.y = " + n.velocity.y);
-					}
-				}
-			}
-
-			
 			super.update();
-			
-			if(predators.countLiving() >= 0){
-				for each(var member:* in predators.members){
-					if(member !=null && member.alive){
-						trace("Playstate after super.update() = " + member.velocity.x);
-						trace("Velocity.y = " + member.velocity.y);
-					}
-				}
-				
-			}
-			
 			FlxG.overlap(plants, testboids, collisions);
 			FlxG.overlap(predators, testboids, collision);
 			
@@ -169,17 +147,6 @@ package
 				else{start.alpha -= 0.01;}
 			}
 			gameWipe();
-			
-			if(predators.countLiving() >= 0){
-				for each(var m:* in predators.members){
-					if(m !=null && m.alive){
-						trace("Playstate end Velocity.x = " + m.velocity.x);
-						trace("Velocity.y = " + m.velocity.y);
-					}
-				}
-				
-			}
-			
 		}
 		
 		private function cheats():void
